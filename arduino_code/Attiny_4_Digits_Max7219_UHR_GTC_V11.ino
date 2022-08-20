@@ -1,9 +1,3 @@
-//#include<avr/io.h>
-//#define F_CPU 16500000UL
-//#include<util/delay.h>
-//#include <stdlib.h> 
-//#include <stdio.h>
-//#include <avr/interrupt.h>
 
 
 #include "LedControl.h"
@@ -73,7 +67,7 @@ void timer1_init(void)
 {
   cli();
   TIMSK |= (1<<OCIE1A);      // Timer/Counter1 Output Compare Interrupt Enable
-  TCCR1 = 0; //Löschen des TCCR1-Registers
+  TCCR1 = 0; //clear TCCR1-Registers
   TCCR1 |= (1 << CTC1);  //Setze CTC-Mod
   TCCR1 |= (1<<CS12)|(1<<CS11);   //prescaling with 32 = bei 8Mhz = 250.000
   //TCCR1 |= (1<<CS12)|(1<<CS11)|(1<<CS10);   //prescaling with 64 = bei 8Mhz = 125.000
@@ -89,7 +83,7 @@ void loop() {
           //interne Uhr//
           ///////////////
         
-      if (tc>999999) {tc=0;sec++;}
+      if (tc>998) {tc=0;sec++;}
       if (sec==60) {tc=0;sec=0; minute++;}
       if (minute>9) {minute=0; min_zehner++;}
       if (min_zehner>5) {min_zehner=0;hour++;}
