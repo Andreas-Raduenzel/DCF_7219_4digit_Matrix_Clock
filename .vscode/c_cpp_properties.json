@@ -4,9 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/home/andreas/OneDrivePrivat/git/DCF_7219_4digit_Matrix_Clock/libraries/LedControl/src",
-                "/home/andreas/.arduino15/packages/arduino/hardware/avr/1.8.5/libraries",
-                "/home/andreas/.arduino15/packages/arduino/hardware/avr"
+  
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
