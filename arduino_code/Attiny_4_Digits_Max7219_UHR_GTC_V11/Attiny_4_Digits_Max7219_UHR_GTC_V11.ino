@@ -91,10 +91,10 @@ void loop() {
           }
     
         ////////////////////////
-        //Uhr per Hand stellen//
+        //Laufschrift Ankündigung Display abschalten//
         ////////////////////////
         
-        //if (bit_is_clear(PINB,4)){ minute++;_delay_ms(5);tc=0;sec=0;}
+        
              
     
         ////////////////////////////////////////////
