@@ -1,35 +1,8 @@
 #include "LedControl.h"
-
+#include "Fonts.h"
 LedControl lc884=LedControl(0,2,1,4);
 
-unsigned char zahl [11][8] =  
-                {     {B00111100,B01100110,B01100110,B01100110,B01100110,B01100110,B01100110,B00111100},//0
-                      {B00011000,B00111000,B00011000,B00011000,B00011000,B00011000,B00011000,B00111100},//1
-                      {B00111100,B01100110,B00000110,B00001100,B00011000,B00110000,B01100000,B01111110},//2
-                      {B00111100,B01100110,B00000110,B00011100,B00000110,B00000110,B01100110,B00111100},//3
-                      {B00001110,B00011110,B00110110,B01100110,B01100110,B01111110,B00000110,B00000110},//4
-                      {B01111110,B01100000,B01100000,B01111100,B00000110,B00000110,B01100110,B00111100},//5
-                      {B00111100,B01100110,B01100000,B01111100,B01100110,B01100110,B01100110,B00111100},//6
-                      {B01111110,B00000110,B00000110,B00001100,B00011000,B00011000,B00011000,B00011000},//7
-                      {B00111100,B01100110,B01100110,B00111100,B01100110,B01100110,B01100110,B00111100},//8
-                      {B00111100,B01100110,B01100110,B01100110,B00111110,B00000110,B01100110,B00111100},//9
-                      {B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000},//alle LEDs aus
-                };
-
-unsigned char zahlD2_Doppelpunkt_an [11][8] =  
-                {     {B00111100,B01100110,B01100111,B01100110,B01100110,B01100111,B01100110,B00111100},//0
-                      {B00011000,B00111000,B00011001,B00011000,B00011000,B00011001,B00011000,B00111100},//1
-                      {B00111100,B01100110,B00000111,B00001100,B00011000,B00110001,B01100000,B01111110},//2
-                      {B00111100,B01100110,B00000111,B00011100,B00000110,B00000111,B01100110,B00111100},//3
-                      {B00001110,B00011110,B00110111,B01100110,B01100110,B01111111,B00000110,B00000110},//4
-                      {B01111110,B01100000,B01100001,B01111100,B00000110,B00000111,B01100110,B00111100},//5
-                      {B00111100,B01100110,B01100001,B01111100,B01100110,B01100111,B01100110,B00111100},//6
-                      {B01111110,B00000110,B00000111,B00001100,B00011000,B00011001,B00011000,B00011000},//7
-                      {B00111100,B01100110,B01100111,B00111100,B01100110,B01100111,B01100110,B00111100},//8
-                      {B00111100,B01100110,B01100111,B01100110,B00111110,B00000111,B01100110,B00111100},//9
-                      {B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000},//alle LEDs aus
-                };   
- 
+unsigned long delayTime=280;
 
 volatile int tc;
 volatile int dcf_data;
@@ -41,15 +14,6 @@ unsigned char hour_zehner=0,
               hour=1,
               min_zehner=5,
               minute=9; 
-
-void setup() {
-  for(int i=0;i<4;i++){
-    lc884.shutdown(i,false);
-    lc884.setIntensity(i,1);
-    lc884.clearDisplay(i);
-  }
-}
-
 
 ISR(TIM1_COMPA_vect)
 { 
@@ -75,9 +39,25 @@ void timer1_init(void)
   sei();
 }
 
+
+void setup() {
+  for(int i=0;i<4;i++){
+    lc884.shutdown(i,false);
+    lc884.setIntensity(i,5);
+    lc884.clearDisplay(i);
+  }
+}
+
+
+
+
+
+
 void loop() { 
-    timer1_init();
-    
+  timer1_init();
+
+
+  
            ///////////////
           //interne Uhr//
           ///////////////
@@ -90,19 +70,10 @@ void loop() {
       if (hour_zehner>1){if (hour>3){hour_zehner=0;hour=0;} 
           }
     
-        ////////////////////////
-        //Laufschrift Ankündigung Display abschalten//
-        ////////////////////////
-        
-        
-             
-    
-        ////////////////////////////////////////////
-        //2 Uhr nachts: Uhrzeit mit DCF bestimmen //
-        ////////////////////////////////////////////
-    
-       if (hour_zehner==0 && hour==2 && min_zehner==0 && minute==0){
-        
+        //////////////////////////////////////////////
+        //Zwei Uhr Nachts: Laufschrift Ankündigung Display abschalten//
+        /////////////////////////////////////////////
+        if (hour_zehner==0 && hour==2 && min_zehner==0 && minute==0){
           //Digit 1 bis 4 Matrix LEDs aus
           for(int x=0;x<8;x++) {
              lc884.setRow (0,0+x,zahl[10] [0+x]); //Digit4 alle LEDs aus
@@ -110,6 +81,15 @@ void loop() {
              lc884.setRow (2,0+x,zahl[10] [0+x]);//Digit2 alle LEDs aus
              lc884.setRow (3,0+x,zahl[10] [0+x]);//Digit1 alle LEDs aus
               }
+          while (1)
+          {
+             //oneMatrix();
+          fourMatrices();
+          delay(1000);
+          }
+          
+         
+              
         }
         
         ///////////////////////////////////////////////////////////
@@ -275,4 +255,179 @@ for(int x=0;x<8;x++) {
 
 
 
+}
+
+
+void fourMatrices(){
+  for(int j=0; j<=40; j++){
+    int currentMatrix = -1;
+ 
+     currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(I,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(c,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(h,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(frei,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(s,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(c,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(h,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(a,currentMatrix+j);
+    }
+   currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(l,currentMatrix+j);
+    }
+       currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(t,currentMatrix+j);
+    }
+       currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(e,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(frei,currentMatrix+j);
+    }
+       currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(m,currentMatrix+j);
+    }
+       currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(i,currentMatrix+j);
+    }
+       currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(c,currentMatrix+j);
+    }
+       currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(h,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(frei,currentMatrix+j);
+    }
+       currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(a,currentMatrix+j);
+    }
+       currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(b,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(frei,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(u,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(n,currentMatrix+j);
+    }/*
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(d,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(frei,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(s,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(u,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(c,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(h,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(e,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(frei,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(d,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(i,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(e,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(frei,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(Z,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(e,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(i,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(t,currentMatrix+j);
+    }
+    currentMatrix--;
+    if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(smile01,currentMatrix+j);
+    }*/
+    delay(delayTime);
+    for(int i=0; i<=4; i++){
+      lc884.clearDisplay(i);
+    }
+  }  
+}
+
+void displayChar(byte *x, int displayNumber){
+  lc884.clearDisplay(displayNumber);
+  for(int j=0; j<=7;j++){
+    lc884.setRow(displayNumber,j,x[j]);
+  }
 }
