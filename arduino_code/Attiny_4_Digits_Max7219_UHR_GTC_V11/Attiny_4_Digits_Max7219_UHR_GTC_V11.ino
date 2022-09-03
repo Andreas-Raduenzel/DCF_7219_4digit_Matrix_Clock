@@ -1,5 +1,6 @@
 #include "LedControl.h"
 #include "Fonts.h"
+
 LedControl lc884=LedControl(0,2,1,4);
 
 unsigned long delayTime=280;
@@ -9,11 +10,11 @@ volatile int dcf_data;
 volatile int sekunde59_data;
 unsigned char bit_counter=0;
 unsigned char bit_dcf[60]; 
-unsigned char sec=55;
+unsigned char sec=0;
 unsigned char hour_zehner=0,
-              hour=1,
-              min_zehner=5,
-              minute=9; 
+              hour=2,
+              min_zehner=0,
+              minute=0; 
 
 ISR(TIM1_COMPA_vect)
 { 
@@ -39,17 +40,13 @@ void timer1_init(void)
   sei();
 }
 
-
 void setup() {
   for(int i=0;i<4;i++){
     lc884.shutdown(i,false);
-    lc884.setIntensity(i,5);
+    lc884.setIntensity(i,2);
     lc884.clearDisplay(i);
   }
 }
-
-
-
 
 
 
@@ -81,14 +78,13 @@ void loop() {
              lc884.setRow (2,0+x,zahl[10] [0+x]);//Digit2 alle LEDs aus
              lc884.setRow (3,0+x,zahl[10] [0+x]);//Digit1 alle LEDs aus
               }
-          while (1)
-          {
-             //oneMatrix();
-          fourMatrices();
-          delay(1000);
-          }
-          
-         
+        
+        
+            oneMatrix();
+            fourMatrices();
+            delay(1000);
+           
+
               
         }
         
@@ -241,14 +237,14 @@ void loop() {
 //Digit 1,2,3 und 4
 if (tc<500){
 for(int x=0;x<8;x++) {
- 
+
   lc884.setRow (0,0+x,zahl[0+minute] [0+x]);//Digit4
   lc884.setRow (1,0+x, zahl[0+min_zehner] [0+x]); // Digit3
-  lc884.setRow (2,0+x, zahlD2_Doppelpunkt_an[0+hour] [0+x]);
+  lc884.setRow (2,0+x, zahl[0+hour] [0+x]);
   lc884.setRow (3,0+x, zahl[0+hour_zehner] [0+x]);// Digit1
 }
-}else{  lc884.setLed(2,2,7,false);// Doppelpunkt 1 aus
-        lc884.setLed(2,5,7,false);// Doppelpunkt 2 aus
+}else{  lc884.setLed(2,2,7,true);// Doppelpunkt 1 aus
+        lc884.setLed(2,5,7,true);// Doppelpunkt 2 aus
     
 }
 
@@ -257,11 +253,31 @@ for(int x=0;x<8;x++) {
 
 }
 
+void oneMatrix(){
+  displayCharAndWait(H,3);
+  displayCharAndWait(a,3);
+  displayCharAndWait(l,3);
+  displayCharAndWait(l,3);
+  displayCharAndWait(o,3);
+  displayCharAndWait(smile01,3);
+}
+
+void displayCharAndWait(byte* x, byte displayNumber){
+  lc884.clearDisplay(displayNumber);
+  for(int j=0; j<=40;j++){
+    lc884.setRow(displayNumber,j,x[j]);
+  }
+  delay(delayTime);
+  lc884.clearDisplay(displayNumber); 
+}
+
 
 void fourMatrices(){
   for(int j=0; j<=40; j++){
     int currentMatrix = -1;
- 
+    /*if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
+      displayChar(I,currentMatrix+j);
+    }*/
      currentMatrix--;
     if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
       displayChar(I,currentMatrix+j);
@@ -349,7 +365,7 @@ void fourMatrices(){
     currentMatrix--;
     if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
       displayChar(n,currentMatrix+j);
-    }/*
+    }
     currentMatrix--;
     if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
       displayChar(d,currentMatrix+j);
@@ -417,7 +433,7 @@ void fourMatrices(){
     currentMatrix--;
     if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
       displayChar(smile01,currentMatrix+j);
-    }*/
+    }
     delay(delayTime);
     for(int i=0; i<=4; i++){
       lc884.clearDisplay(i);
