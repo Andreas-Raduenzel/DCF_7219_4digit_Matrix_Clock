@@ -1,6 +1,9 @@
 #include "LedControl.h"
 #include "Fonts.h"
+<<<<<<< HEAD
 
+=======
+>>>>>>> b0d018e750799fa23341031f99ca9a12034e9294
 LedControl lc884=LedControl(0,2,1,4);
 
 unsigned long delayTime=280;
@@ -12,9 +15,15 @@ unsigned char bit_counter=0;
 unsigned char bit_dcf[60]; 
 unsigned char sec=0;
 unsigned char hour_zehner=0,
+<<<<<<< HEAD
               hour=2,
               min_zehner=0,
               minute=0; 
+=======
+              hour=1,
+              min_zehner=5,
+              minute=9; 
+>>>>>>> b0d018e750799fa23341031f99ca9a12034e9294
 
 ISR(TIM1_COMPA_vect)
 { 
@@ -40,16 +49,30 @@ void timer1_init(void)
   sei();
 }
 
+<<<<<<< HEAD
 void setup() {
   for(int i=0;i<4;i++){
     lc884.shutdown(i,false);
     lc884.setIntensity(i,2);
+=======
+
+void setup() {
+  for(int i=0;i<4;i++){
+    lc884.shutdown(i,false);
+    lc884.setIntensity(i,5);
+>>>>>>> b0d018e750799fa23341031f99ca9a12034e9294
     lc884.clearDisplay(i);
   }
 }
 
 
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> b0d018e750799fa23341031f99ca9a12034e9294
 void loop() { 
   timer1_init();
 
@@ -78,6 +101,7 @@ void loop() {
              lc884.setRow (2,0+x,zahl[10] [0+x]);//Digit2 alle LEDs aus
              lc884.setRow (3,0+x,zahl[10] [0+x]);//Digit1 alle LEDs aus
               }
+<<<<<<< HEAD
         
         
             oneMatrix();
@@ -85,6 +109,16 @@ void loop() {
             delay(1000);
            
 
+=======
+          while (1)
+          {
+             //oneMatrix();
+          fourMatrices();
+          delay(1000);
+          }
+          
+         
+>>>>>>> b0d018e750799fa23341031f99ca9a12034e9294
               
         }
         
@@ -253,6 +287,7 @@ for(int x=0;x<8;x++) {
 
 }
 
+<<<<<<< HEAD
 void oneMatrix(){
   displayCharAndWait(H,3);
   displayCharAndWait(a,3);
@@ -271,13 +306,19 @@ void displayCharAndWait(byte* x, byte displayNumber){
   lc884.clearDisplay(displayNumber); 
 }
 
+=======
+>>>>>>> b0d018e750799fa23341031f99ca9a12034e9294
 
 void fourMatrices(){
   for(int j=0; j<=40; j++){
     int currentMatrix = -1;
+<<<<<<< HEAD
     /*if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
       displayChar(I,currentMatrix+j);
     }*/
+=======
+ 
+>>>>>>> b0d018e750799fa23341031f99ca9a12034e9294
      currentMatrix--;
     if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
       displayChar(I,currentMatrix+j);
@@ -365,7 +406,11 @@ void fourMatrices(){
     currentMatrix--;
     if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
       displayChar(n,currentMatrix+j);
+<<<<<<< HEAD
     }
+=======
+    }/*
+>>>>>>> b0d018e750799fa23341031f99ca9a12034e9294
     currentMatrix--;
     if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
       displayChar(d,currentMatrix+j);
@@ -433,7 +478,11 @@ void fourMatrices(){
     currentMatrix--;
     if( ((currentMatrix+j)>=0) && ((currentMatrix+j)<4) ){
       displayChar(smile01,currentMatrix+j);
+<<<<<<< HEAD
     }
+=======
+    }*/
+>>>>>>> b0d018e750799fa23341031f99ca9a12034e9294
     delay(delayTime);
     for(int i=0; i<=4; i++){
       lc884.clearDisplay(i);
