@@ -18,6 +18,8 @@ unsigned char hour_zehner=0,
 ISR(TIM1_COMPA_vect)
 { 
 tc++;
+
+
   if (bit_is_set(PINB,1))//dcf_modul_pollin invertiert!!!
       {
       dcf_data++;}
@@ -35,35 +37,55 @@ void timer1_init(void)
   TCCR1 |= (1<<CS12)|(1<<CS11);   //prescaling with 32 = bei 8Mhz = 250.000
   //TCCR1 |= (1<<CS12)|(1<<CS11)|(1<<CS10);   //prescaling with 64 = bei 8Mhz = 125.000
   OCR1C=249;// compare value / Vergleichswert = (CPU Frequenz[8MHZ] : (Vorteiler [32] x Interruptfrequenz[1000])-1
- //OCR1C=125;// compare value / Vergleichswert = (CPU Frequenz[8MHZ] : (Vorteiler [64] x Interruptfrequenz[1000])-1
+ //OCR1C=124;// compare value / Vergleichswert = (CPU Frequenz[8MHZ] : (Vorteiler [64] x Interruptfrequenz[1000])-1
   sei();
 }
 
 void setup() {
   for(int i=0;i<4;i++){
     lc884.shutdown(i,false);
-    lc884.setIntensity(i,2);
+    lc884.setIntensity(i,1);
     lc884.clearDisplay(i);
   }
 }
 
-
-
 void loop() { 
   timer1_init();
-
-
   
            ///////////////
           //interne Uhr//
           ///////////////
         
-      if (tc>998) {tc=0;sec++;}
-      if (sec==60) {tc=0;sec=0; minute++;}
-      if (minute>9) {minute=0; min_zehner++;}
-      if (min_zehner>5) {min_zehner=0;hour++;}
-      if (hour>9) {hour=0; hour_zehner++;}
-      if (hour_zehner>1){if (hour>3){hour_zehner=0;hour=0;} 
+          if (tc>998) {tc=0;sec++;}
+          if (sec==60) {tc=0;sec=0; minute++;}
+          if (minute>9) {minute=0; min_zehner++;}
+          if (min_zehner>5) {min_zehner=0;hour++;}
+          if (hour>9) {hour=0; hour_zehner++;}
+          if (hour_zehner>1){if (hour>3){hour_zehner=0;hour=0;} 
+          }
+
+          /////////////////////////////////////////
+          //Spi_Siebensegement Digits1-4 schalten//
+          /////////////////////////////////////////
+
+          //Digit 1,2,3 und 4
+          if minute++ { 
+                  for(int x=0;x<8;x++) {
+
+                  lc884.setRow (0,0+x,zahl[0+minute] [0+x]);//Digit4
+                  lc884.setRow (1,0+x, zahl[0+min_zehner] [0+x]); // Digit3
+                  lc884.setRow (2,0+x, zahl[0+hour] [0+x]);
+                  lc884.setRow (3,0+x, zahl[0+hour_zehner] [0+x]);// Digit1
+                }
+          }
+           
+          //Colon blink
+          if (tc<500){
+                  lc884.setLed(2,2,7,true);// colon 1 on
+                  lc884.setLed(2,5,7,true);// colon 2 on
+          }else{  lc884.setLed(2,2,7,false);// colon 1 off
+                  lc884.setLed(2,5,7,false);// colon 2 off
+              
           }
     
         //////////////////////////////////////////////
@@ -229,28 +251,12 @@ void loop() {
     
   } 
 
-/////////////////////////////////////////
-//Spi_Siebensegement Digits1-4 schalten//
-/////////////////////////////////////////
-   
-//Digit 1,2,3 und 4
-if (tc<500){
-for(int x=0;x<8;x++) {
-
-  lc884.setRow (0,0+x,zahl[0+minute] [0+x]);//Digit4
-  lc884.setRow (1,0+x, zahl[0+min_zehner] [0+x]); // Digit3
-  lc884.setRow (2,0+x, zahl[0+hour] [0+x]);
-  lc884.setRow (3,0+x, zahl[0+hour_zehner] [0+x]);// Digit1
-}
-}else{  lc884.setLed(2,2,7,true);// Doppelpunkt 1 aus
-        lc884.setLed(2,5,7,true);// Doppelpunkt 2 aus
-    
-}
 
 
 
 
-}
+
+}//End void loop
 
 void oneMatrix(){
   displayCharAndWait(H,3);
