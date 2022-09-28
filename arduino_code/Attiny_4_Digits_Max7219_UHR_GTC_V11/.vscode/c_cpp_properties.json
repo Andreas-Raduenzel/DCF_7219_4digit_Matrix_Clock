@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:\\Users\\andre\\OneDrive\\git\\DCF_7219_4digit_Matrix_Clock\\arduino_code",
+                "C:\\Users\\andre\\OneDrive\\git\\DCF_7219_4digit_Matrix_Clock\\arduino_code\\libraries\\Fonts",
+                "C:\\Users\\andre\\OneDrive\\git\\DCF_7219_4digit_Matrix_Clock\\arduino_code\\libraries\\LedControl\\src"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-msvc-x64"
+        }
+    ],
+    "version": 4
+}
